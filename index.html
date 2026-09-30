@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEOI: National Examination Operations Institution (concept prototype)</title>
+<meta name="description" content="Concept prototype for the Maudrik V7.0 policy case: a proposed national institution that makes a leaked exam paper worthless.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Crect x='1' y='1' width='50' height='50' rx='12' fill='%2313294B'/%3E%3Crect x='12' y='12' width='8' height='28' rx='2' fill='%23E07B1F'/%3E%3Crect x='22' y='12' width='8' height='28' rx='2' fill='%23fff'/%3E%3Crect x='32' y='12' width='8' height='28' rx='2' fill='%231E7A4C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@500;600;700;800&family=Anek+Devanagari:wght@500;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#13294B;--navy-2:#0F2342;--navy-3:#0B1A33;--navy-4:#0C1C36;--line-dark:#2E4468;--line-dark-2:#3A4E70;
+  --ground:#F3F5F8;--white:#FFFFFF;--ink:#13294B;--ink-2:#3A4658;--ink-3:#4A5568;--muted:#5A6578;--line:#D6DCE4;--chip:#EDF1F6;
+  --saffron:#E07B1F;--saffron-soft:#F2A65A;--saffron-bg:#FFF4E5;--saffron-ink:#6B3600;--green:#1E7A4C;--green-bg:#EAF5EF;
+  --pale:#C9D3E3;--pale-2:#9FB3D1;--pale-3:#D5DEEB;
+  --display:'Anek Latin','Hind',system-ui,sans-serif;--body:'Hind','Noto Sans',system-ui,sans-serif;--deva:'Anek Devanagari','Hind',sans-serif;
+}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);line-height:1.5}
+a{color:var(--navy)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--saffron);outline-offset:2px}
+button{font-family:var(--body)}
+.wrap{max-width:80rem;margin:0 auto;padding:0 2.5rem}
+.section{padding:5.5rem 0}
+.h2{margin:0;font-family:var(--display);font-size:2.75rem;font-weight:700;line-height:1.08}
+.lede{margin:0;font-size:1.125rem;line-height:1.6;color:var(--ink-2)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:3.375rem;padding:0 1.6rem;border-radius:.75rem;font-size:1.0625rem;font-weight:600;text-decoration:none;cursor:pointer;border:none}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Utility bar */
+.util{background:var(--navy-4);color:var(--pale);font-size:.875rem}
+.util .wrap{min-height:2.75rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+.util a{color:#fff}
+.util-group{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.ubtn{min-width:2.25rem;height:1.9rem;padding:0 .6rem;background:transparent;color:#fff;border:1px solid var(--line-dark-2);border-radius:.375rem;cursor:pointer;font-size:.85rem}
+.ubtn[aria-pressed="true"]{background:#fff;color:var(--navy-4)}
+.ubtn.hi{font-family:var(--deva);font-size:.95rem}
+.tricolour{display:flex;height:5px}.tricolour span{flex:1}
+
+/* Header */
+header.site{background:#fff;border-bottom:1px solid var(--line)}
+header.site .wrap{min-height:6rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;padding-top:.75rem;padding-bottom:.75rem}
+.brand{display:flex;align-items:center;gap:1rem;text-decoration:none;color:var(--ink)}
+.brand-text{display:flex;flex-direction:column;gap:2px}
+.brand-hi{font-family:var(--deva);font-size:1.0625rem;font-weight:600;color:var(--ink-3)}
+.brand-en{font-family:var(--display);font-size:1.375rem;font-weight:700;line-height:1.1}
+.brand-sub{font-size:.8125rem;color:var(--ink-3)}
+nav.main{display:flex;align-items:center;gap:1.75rem;font-weight:500;flex-wrap:wrap}
+nav.main a{text-decoration:none}
+nav.main a.report{background:var(--saffron);color:#1A1206;font-weight:600;padding:.75rem 1.25rem;border-radius:.625rem}
+.ribbon{background:var(--saffron-bg);color:var(--saffron-ink);font-size:.875rem;border-bottom:1px solid #F3D3A8}
+.ribbon .wrap{padding-top:.75rem;padding-bottom:.75rem}
+
+/* Hero */
+.hero{background:var(--navy-2);color:#fff}
+.hero .wrap{padding-top:5.5rem;padding-bottom:6rem;display:grid;grid-template-columns:1.08fr .92fr;gap:4rem;align-items:center}
+.hero-copy{display:flex;flex-direction:column;gap:1.75rem}
+.hero-kicker{margin:0;font-size:1.0625rem;color:var(--pale-2)}
+.hero h1{margin:0;font-family:var(--display);font-size:5rem;font-weight:800;line-height:.98;letter-spacing:-1px}
+.hero h1.hi{font-family:var(--deva);font-size:4.25rem;line-height:1.15;letter-spacing:0}
+.hero-sub{margin:0;font-size:1.3125rem;line-height:1.55;color:var(--pale-3);max-width:36rem}
+.hero-sub.hi{font-family:var(--deva)}
+.hero-note{margin:0;font-size:1.0625rem;line-height:1.6;color:#B7C6DC;max-width:35rem}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-light{background:#fff;color:var(--navy-2)}
+.btn-ghost{border:1.5px solid var(--pale-2);color:#fff;background:transparent}
+.meter{background:#fff;color:var(--ink);border-radius:1.5rem;padding:2.25rem;display:flex;flex-direction:column;gap:1.4rem;box-shadow:0 30px 60px rgba(4,12,28,.45)}
+.meter h2{margin:0;font-family:var(--display);font-size:1.625rem;font-weight:700}
+.meter-sub{margin:.35rem 0 0;color:var(--ink-3)}
+.meter-row{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.meter-value{font-family:var(--display);font-size:3.75rem;font-weight:800;line-height:1;transition:color .3s}
+.meter-verdict{font-weight:600;transition:color .3s}
+.bar{height:12px;background:#E8EDF3;border-radius:6px;overflow:hidden;margin-top:.6rem}
+.bar span{display:block;height:12px;border-radius:6px;transition:width .6s ease,background .3s}
+.toggles{display:flex;flex-direction:column;gap:.75rem}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:1rem;width:100%;min-height:4.5rem;padding:.875rem 1.125rem;background:#fff;border:1.5px solid #C9D2DE;border-radius:.875rem;text-align:left;color:var(--ink);cursor:pointer;transition:background .25s,border-color .25s}
+.toggle[aria-pressed="true"]{background:var(--green-bg);border-color:var(--green)}
+.toggle-t{display:block;font-size:1.0625rem;font-weight:600}
+.toggle-d{display:block;font-size:.906rem;color:var(--ink-3);line-height:1.4}
+.pill{flex-shrink:0;min-width:3.25rem;padding:.375rem .75rem;border-radius:999px;background:#E8EDF3;color:var(--ink-2);font-size:.875rem;font-weight:600;text-align:center}
+.toggle[aria-pressed="true"] .pill{background:var(--green);color:#fff}
+.fine{margin:0;font-size:.8125rem;line-height:1.5;color:var(--muted)}
+
+/* Why now */
+.why{background:#fff}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;margin-top:2.5rem}
+.fact{border-top:4px solid var(--navy);padding-top:1.1rem;display:flex;flex-direction:column;gap:.5rem}
+.fact.accent{border-color:var(--saffron)}
+.fact-n{font-family:var(--display);font-size:3rem;font-weight:800;line-height:1}
+.fact-t{font-size:1.0625rem;line-height:1.45}
+.fact-s{font-size:.8125rem;color:var(--muted)}
+
+/* Journey */
+.journey{background:var(--navy-3);color:#fff}
+.journey .wrap{display:flex;flex-direction:column;gap:2rem}
+.journey-head{display:flex;justify-content:space-between;align-items:flex-end;gap:2.5rem;flex-wrap:wrap}
+.journey-head .h2{font-weight:800;font-size:3rem}
+.journey-head p{margin:.75rem 0 0;font-size:1.125rem;line-height:1.6;color:var(--pale);max-width:45rem}
+.jctrl{display:flex;gap:.625rem}
+.icon-btn{width:3.25rem;height:3.25rem;background:transparent;border:1.5px solid var(--line-dark-2);border-radius:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.play{background:var(--saffron);color:#1A1206;min-height:3.25rem;padding:0 1.5rem;border-radius:.75rem;border:none;font-size:1.0625rem;font-weight:600;cursor:pointer}
+.track{position:relative}
+.track-line,.track-fill{position:absolute;left:5.55%;top:24px;height:4px;border-radius:2px}
+.track-line{right:5.55%;background:var(--line-dark)}
+.track-fill{background:var(--saffron);transition:width .5s ease}
+.stops{list-style:none;margin:0;padding:0;position:relative;display:grid;grid-template-columns:repeat(9,1fr);gap:.375rem}
+.stop{display:flex;flex-direction:column;align-items:center;gap:.625rem;width:100%;padding:0;background:transparent;border:none;cursor:pointer;color:var(--pale-2)}
+.dot{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--navy-3);color:var(--pale-2);border:3px solid var(--line-dark-2);font-family:var(--display);font-size:1.19rem;font-weight:700;transition:background .3s,border-color .3s}
+.stop-label{font-size:.906rem;line-height:1.3;text-align:center;font-weight:500}
+.stop.done .dot{background:var(--saffron-soft);border-color:var(--saffron-soft);color:#1A1206}
+.stop.done{color:#E6ECF5}
+.stop[aria-current="step"] .dot{background:var(--saffron);border-color:#fff;color:#1A1206}
+.stop[aria-current="step"]{color:#fff}
+.stop[aria-current="step"] .stop-label{font-weight:700}
+.places-label{font-size:.9375rem;color:var(--pale-2);margin-bottom:.625rem;display:block}
+.places{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem}
+.place{background:var(--navy);border:1.5px solid var(--line-dark);border-radius:.875rem;padding:.875rem 1rem;min-height:5.75rem;display:flex;flex-direction:column;gap:.25rem;transition:background .3s,border-color .3s}
+.place-tier{font-size:.8125rem;color:var(--pale-2)}
+.place-name{font-size:1.0625rem;font-weight:600;color:#E6ECF5}
+.place-here{font-size:.844rem;font-weight:600;color:var(--saffron-soft);display:none}
+.place.here{background:#fff;border-color:var(--saffron)}
+.place.here .place-tier{color:var(--ink-3)}.place.here .place-name{color:var(--ink)}
+.place.here .place-here{display:block;color:#B35A0B}
+.detail{display:grid;grid-template-columns:.95fr 1.15fr .95fr;gap:1.25rem}
+.card-dark{background:var(--navy);border-radius:1.25rem;padding:1.75rem;display:flex;flex-direction:column;gap:1.1rem}
+.card-light{background:#fff;color:var(--ink);border-radius:1.25rem;padding:1.75rem;display:flex;flex-direction:column;gap:1.1rem}
+.card-outline{background:var(--navy-2);border:1.5px solid var(--line-dark);border-radius:1.25rem;padding:1.75rem;display:flex;flex-direction:column;gap:1rem}
+.card-kicker{font-size:.875rem;color:var(--pale-2)}
+.card-title{margin:.35rem 0 0;font-family:var(--display);font-size:1.5625rem;font-weight:700;line-height:1.15}
+.h3{margin:0;font-family:var(--display);font-size:1.25rem;font-weight:700}
+.grid40{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.grid40 span{display:block;height:22px;border-radius:4px;transition:background .5s ease}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem .875rem}
+.legend span{display:inline-flex;align-items:center;gap:.375rem;font-size:.844rem;color:var(--pale)}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.read{border-top:1px solid var(--line-dark);padding-top:1rem;display:flex;align-items:center;gap:1rem}
+.read-n{font-family:var(--display);font-size:2.5rem;font-weight:800;line-height:1;flex-shrink:0}
+.read-t{font-size:.906rem;line-height:1.45;color:var(--pale)}
+.people{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
+.people li{display:flex;gap:.875rem;align-items:flex-start}
+.avatar{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center}
+.p-role{display:block;font-weight:600}
+.p-where{display:block;font-size:.844rem;color:var(--green);font-weight:600}
+.p-does{display:block;font-size:.906rem;line-height:1.45;color:var(--ink-2)}
+.tech{border-top:1px solid var(--line);padding-top:1rem;display:flex;flex-direction:column;gap:.625rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{font-size:.844rem;font-weight:500;padding:.375rem .75rem;border-radius:999px;background:var(--chip);color:var(--ink)}
+.ledger-head{display:flex;justify-content:space-between;align-items:baseline;gap:.75rem}
+.ledger-head span{font-size:.78rem;color:var(--pale-2)}
+.ledger{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5rem}
+.ledger li{display:flex;flex-direction:column;gap:2px;padding:.625rem .75rem;border-radius:.625rem;background:var(--navy);animation:none}
+.ledger li.new{background:#1E3A63;animation:pop .5s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.l-text{font-size:.844rem;line-height:1.4;color:#E6ECF5}
+.l-hash{font-size:.78rem;color:var(--pale-2);font-variant-numeric:tabular-nums}
+.threat{border-top:1px solid var(--line-dark);padding-top:.875rem;display:flex;flex-direction:column;gap:.625rem}
+.threat p{margin:0;font-size:.906rem;line-height:1.5;color:#E6ECF5}
+
+/* Inside NEOI */
+.inside .wrap{display:flex;flex-direction:column;gap:2.25rem}
+.inside-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:2rem;align-items:start}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.tier{display:flex;flex-direction:column;gap:.625rem}
+.tier-head{border-radius:.875rem;padding:.875rem 1rem;display:flex;flex-direction:column;gap:2px}
+.tier-head b{font-family:var(--display);font-size:1.19rem}
+.tier-head span{font-size:.844rem;opacity:.9}
+.dept{display:flex;flex-direction:column;gap:.5rem;width:100%;padding:.75rem .875rem;background:#fff;border:1.5px solid var(--line);border-radius:.75rem;text-align:left;color:var(--ink);cursor:pointer;transition:background .2s,border-color .2s}
+.dept[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.dept-row{display:flex;justify-content:space-between;gap:.625rem;width:100%}
+.dept-name{font-size:.9375rem;font-weight:600;line-height:1.3}
+.dept-count{font-family:var(--display);font-weight:700}
+.dept-track{display:block;width:100%;height:5px;border-radius:3px;background:var(--chip)}
+.dept-track i{display:block;height:5px;border-radius:3px;background:#5B7BB0}
+.dept[aria-pressed="true"] .dept-track{background:var(--line-dark)}
+.dept[aria-pressed="true"] .dept-track i{background:var(--saffron-soft)}
+.dept-card{background:#fff;border:1px solid var(--line);border-radius:1.25rem;padding:2rem;display:flex;flex-direction:column;gap:1.1rem;position:sticky;top:1.5rem}
+.dept-tier{font-size:.875rem;font-weight:600;color:var(--green)}
+.dept-title{margin:.35rem 0;font-family:var(--display);font-size:1.875rem;font-weight:700;line-height:1.1}
+.dept-countline{color:var(--ink-2)}
+.stagechips{display:grid;grid-template-columns:repeat(9,1fr);gap:5px}
+.stagechips span{height:34px;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;background:var(--chip);color:#8A94A6}
+.stagechips span.on{background:var(--navy);color:#fff}
+.moves{margin:0;font-size:.9375rem;line-height:1.5;color:var(--ink-2);background:var(--saffron-bg);border-radius:.75rem;padding:.875rem 1rem}
+.moves strong{color:var(--saffron-ink)}
+
+/* For you */
+.you{background:#fff}
+.you .wrap{display:flex;flex-direction:column;gap:2.25rem}
+.tabs{display:flex;flex-wrap:wrap;gap:.625rem}
+.tab{min-height:3rem;padding:0 1.25rem;background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:999px;font-size:1rem;font-weight:600;cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--navy);color:#fff}
+.panel{display:grid;grid-template-columns:.85fr 1.15fr;gap:3rem;background:var(--ground);border-radius:1.5rem;padding:3rem}
+.panel-l{display:flex;flex-direction:column;gap:1rem;align-items:flex-start}
+.panel-label{font-weight:600;color:var(--green)}
+.panel-promise{margin:0;font-family:var(--display);font-size:2.25rem;font-weight:700;line-height:1.12}
+.btn-navy{background:var(--navy);color:#fff}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1rem}
+.checks li{display:flex;gap:1rem;align-items:flex-start;background:#fff;border-radius:.875rem;padding:1.25rem 1.375rem;font-size:1.0625rem}
+
+/* Roadmap */
+.roadmap{background:var(--navy-2);color:#fff}
+.roadmap .lede{color:var(--pale)}
+.phases{list-style:none;margin:2.75rem 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:1rem}
+.phase{background:#132B4E;border:1px solid var(--line-dark);border-radius:1rem;padding:1.5rem;display:flex;flex-direction:column;gap:.625rem}
+.phase.first{background:#1B355C}
+.phase-y{font-size:.9375rem;font-weight:600;color:var(--pale-2)}
+.phase.first .phase-y{color:var(--saffron-soft)}
+.phase-n{margin:0;font-family:var(--display);font-size:1.375rem;font-weight:700}
+.phase-t{margin:0;font-size:.9375rem;color:var(--pale);flex-grow:1}
+.phase-c{font-family:var(--display);font-size:1.625rem;font-weight:700}
+
+/* Report */
+.report{background:var(--saffron-bg)}
+.report .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:4rem}
+.report .h2{color:#3A1D00}
+.report-copy{display:flex;flex-direction:column;gap:1.1rem;color:#4A2600}
+.report-copy p{margin:0;font-size:1.125rem;line-height:1.6}
+form.leak{background:#fff;border-radius:1.25rem;padding:2.25rem;display:flex;flex-direction:column;gap:1.25rem}
+.field{display:flex;flex-direction:column;gap:.5rem}
+.field label{font-weight:600}
+.field input,.field textarea{min-height:3.125rem;padding:.75rem .875rem;border:1.5px solid #B8C2D0;border-radius:.625rem;font-family:var(--body);font-size:1rem;color:var(--ink)}
+.field textarea{resize:vertical}
+.form-msg{margin:0;padding:.875rem 1rem;border-radius:.625rem;background:var(--green-bg);color:#155C39;font-weight:500}
+
+/* Footer */
+footer.site{background:var(--navy-4);color:var(--pale)}
+footer.site .wrap{padding-top:4rem;padding-bottom:2.5rem;display:flex;flex-direction:column;gap:2.5rem}
+.foot-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:2.5rem}
+.foot-col{display:flex;flex-direction:column;gap:.75rem;font-size:.9375rem}
+.foot-col a{color:var(--pale)}
+.foot-h{font-weight:600;color:#fff}
+.foot-bottom{border-top:1px solid var(--line-dark);padding-top:1.5rem;display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;font-size:.875rem;color:var(--pale-2)}
+
+/* Responsive */
+@media (max-width:1100px){
+  .hero .wrap,.split,.inside-grid,.report .wrap,.panel{grid-template-columns:1fr;gap:2.5rem}
+  .detail{grid-template-columns:1fr 1fr}
+  .detail .card-outline{grid-column:1 / -1}
+  .facts{grid-template-columns:repeat(2,1fr)}
+  .phases{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .dept-card{position:static}
+  .hero h1{font-size:4rem}
+}
+@media (max-width:760px){
+  .wrap{padding:0 1.25rem}
+  .section{padding:3.5rem 0}
+  .h2,.journey-head .h2{font-size:2.1rem}
+  .hero .wrap{padding-top:3.5rem;padding-bottom:3.5rem}
+  .hero h1{font-size:3rem}.hero h1.hi{font-size:2.6rem}
+  .meter{padding:1.5rem}.meter-value{font-size:2.75rem}
+  .detail,.tiers,.facts,.phases,.foot-grid{grid-template-columns:1fr}
+  .places{grid-template-columns:1fr 1fr}
+  .track{overflow-x:auto;padding-bottom:.5rem}
+  .stops{min-width:52rem}
+  .track-line,.track-fill{display:none}
+  .panel{padding:1.5rem}
+  nav.main{gap:1rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+
+<div class="util">
+  <div class="wrap">
+    <div class="util-group">
+      <a href="#main">Skip to main content</a>
+      <span>Proposed national institution: concept prototype</span>
+    </div>
+    <div class="util-group">
+      <span>Text size</span>
+      <span class="util-group" style="gap:4px">
+        <button type="button" class="ubtn" data-zoom="-1" aria-label="Decrease text size">A−</button>
+        <button type="button" class="ubtn" data-zoom="0" aria-label="Default text size">A</button>
+        <button type="button" class="ubtn" data-zoom="1" aria-label="Increase text size">A+</button>
+      </span>
+      <span class="util-group" style="gap:4px">
+        <button type="button" class="ubtn" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" class="ubtn hi" data-lang="hi" aria-pressed="false" lang="hi">हिंदी</button>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="tricolour" aria-hidden="true"><span style="background:#E07B1F"></span><span style="background:#fff"></span><span style="background:#1E7A4C"></span></div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#main">
+      <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true"><rect x="1" y="1" width="50" height="50" rx="12" fill="#13294B"/><rect x="12" y="12" width="8" height="28" rx="2" fill="#E07B1F"/><rect x="22" y="12" width="8" height="28" rx="2" fill="#FFFFFF"/><rect x="32" y="12" width="8" height="28" rx="2" fill="#1E7A4C"/><rect x="10" y="24" width="32" height="4" rx="2" fill="#13294B"/></svg>
+      <span class="brand-text">
+        <span class="brand-hi" lang="hi">राष्ट्रीय परीक्षा संचालन संस्थान</span>
+        <span class="brand-en">National Examination Operations Institution</span>
+        <span class="brand-sub">Proposed under the Ministry of Education, Government of India</span>
+      </span>
+    </a>
+    <nav class="main" aria-label="Main">
+      <a href="#journey">Follow a paper</a>
+      <a href="#inside">Inside NEOI</a>
+      <a href="#you">For you</a>
+      <a href="#roadmap">Roadmap</a>
+      <a class="report" href="#report">Report a leak</a>
+    </nav>
+  </div>
+</header>
+<div class="ribbon" role="note"><div class="wrap">This is a concept prototype for the Maudrik V7.0 policy case. NEOI is a proposed institution, not an existing body, and this is not an official Government of India website.</div></div>
+
+<main id="main">
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap">
+    <div class="hero-copy">
+      <div id="hero-en">
+        <p class="hero-kicker">For every student who has ever re-sat an exam that someone else leaked</p>
+        <h1 id="hero-title" style="margin-top:1.5rem">We make a leaked paper worthless.</h1>
+        <p class="hero-sub" style="margin-top:1.5rem">NEOI is a proposed national institution that runs the security of India's public examinations, so that even if a question is stolen, it cannot be sold.</p>
+      </div>
+      <div id="hero-hi" lang="hi" hidden>
+        <p class="hero-kicker" style="font-family:var(--deva)">हर उस विद्यार्थी के लिए जिसे किसी और के लीक की वजह से दोबारा परीक्षा देनी पड़ी</p>
+        <h1 class="hi" style="margin-top:1.5rem">हम लीक हुए पेपर को बेकार बना देते हैं।</h1>
+        <p class="hero-sub hi" style="margin-top:1.5rem">NEOI एक प्रस्तावित राष्ट्रीय संस्थान है जो भारत की सार्वजनिक परीक्षाओं की सुरक्षा संभालता है, ताकि कोई प्रश्न चोरी हो भी जाए, तो वह बिक न सके।</p>
+      </div>
+      <p class="hero-note">Exam owners like CBSE, NTA, UPSC and the IIMs keep every academic decision. NEOI secures the journey from the question pool to the published result.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-light" href="#journey">Follow a paper through NEOI</a>
+        <a class="btn btn-ghost" href="#report">Report a suspected leak</a>
+      </div>
+    </div>
+
+    <div class="meter">
+      <div>
+        <h2>What is a leaked paper worth?</h2>
+        <p class="meter-sub">Switch on NEOI's three controls and watch the price fall.</p>
+      </div>
+      <div aria-live="polite">
+        <div class="meter-row">
+          <span class="meter-value" id="m-value">₹15,00,000</span>
+          <span class="meter-verdict" id="m-verdict">Sells easily</span>
+        </div>
+        <div class="bar"><span id="m-bar"></span></div>
+      </div>
+      <div class="toggles" id="m-toggles"></div>
+      <p class="fine">Illustrative model. The starting price reflects media reports of up to ₹15 lakh per buyer; each control's effect is a planning assumption, not a measured estimate.</p>
+    </div>
+  </div>
+</section>
+
+<section class="why section" aria-labelledby="why-title">
+  <div class="wrap">
+    <div class="split">
+      <h2 class="h2" id="why-title">Leaks are a market. Punishment alone has not shut it down.</h2>
+      <p class="lede">Penalties have risen, most recently under the 2026 Amendment to the Public Examinations Act. The price of a leaked paper has not fallen. NEOI is designed to change that.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="fact-n">41</span><span class="fact-t">reported paper leaks across 15 states in five years</span><span class="fact-s">Indian Express investigation, Feb 2024</span></div>
+      <div class="fact"><span class="fact-n">1.4 crore</span><span class="fact-t">applicants affected by those leaks</span><span class="fact-s">Indian Express investigation, Feb 2024</span></div>
+      <div class="fact accent"><span class="fact-n">22.79 lakh</span><span class="fact-t">registered for NEET-UG 2026, cancelled on 12 May 2026</span><span class="fact-s">National Testing Agency notices, May 2026</span></div>
+      <div class="fact"><span class="fact-n">48 lakh</span><span class="fact-t">candidates in the UP Police Constable exam cancelled in Feb 2024</span><span class="fact-s">Business Today, Feb 2024</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="journey section" id="journey" aria-labelledby="journey-title">
+  <div class="wrap">
+    <div class="journey-head">
+      <div>
+        <h2 class="h2" id="journey-title">Follow one question paper through NEOI</h2>
+        <p>From the exam owner's question pool to your published result. Step through each stage to see where the paper is, who handles it, the technology guarding it and what goes on the shared ledger.</p>
+      </div>
+      <div class="jctrl">
+        <button type="button" class="icon-btn" id="j-prev" aria-label="Previous stage"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4l-6 6 6 6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="play" id="j-play">Play the journey</button>
+        <button type="button" class="icon-btn" id="j-next" aria-label="Next stage"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-line"></div>
+      <div class="track-fill" id="j-fill" style="width:0"></div>
+      <ol class="stops" id="j-stops" aria-label="Stages of the exam paper"></ol>
+    </div>
+
+    <div>
+      <span class="places-label">Where the paper is, and who moves with it</span>
+      <div class="places" id="j-places"></div>
+    </div>
+
+    <div class="detail" aria-live="polite">
+      <div class="card-dark">
+        <div>
+          <span class="card-kicker" id="j-kicker"></span>
+          <h3 class="card-title" id="j-title"></h3>
+        </div>
+        <div class="grid40" id="j-grid" role="img"></div>
+        <div class="legend" id="j-legend"></div>
+        <div class="read"><span class="read-n" id="j-readn"></span><span class="read-t" id="j-readt"></span></div>
+      </div>
+      <div class="card-light">
+        <h3 class="h3">People at this stage</h3>
+        <ul class="people" id="j-people"></ul>
+        <div class="tech">
+          <span style="font-weight:600">Technology guarding it</span>
+          <div class="chips" id="j-tech"></div>
+        </div>
+      </div>
+      <div class="card-outline">
+        <div class="ledger-head"><h3 class="h3">Shared ledger</h3><span>illustrative fingerprints</span></div>
+        <ol class="ledger" id="j-ledger"></ol>
+        <div class="threat">
+          <p><strong style="color:#7FC8A9">Threat blocked. </strong><span id="j-threat"></span></p>
+          <p><strong style="color:#F2A65A">If it fails. </strong><span id="j-fails"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="inside section" id="inside" aria-labelledby="inside-title">
+  <div class="wrap">
+    <div class="split">
+      <h2 class="h2" id="inside-title">Inside NEOI: 860 people across three levels</h2>
+      <p class="lede">Standards, keys and evidence sit at the national core. Printing, custody and centres are run from five regional hubs. On exam day, three NEOI people join every centre. Choose a team to see what it does and which stages it touches.</p>
+    </div>
+    <div class="inside-grid">
+      <div class="tiers" id="tiers"></div>
+      <div class="dept-card" aria-live="polite">
+        <div>
+          <span class="dept-tier" id="d-tier"></span>
+          <h3 class="dept-title" id="d-name"></h3>
+          <span class="dept-countline" id="d-count"></span>
+        </div>
+        <p style="margin:0;font-size:1.03rem;line-height:1.55" id="d-does"></p>
+        <div style="display:flex;flex-direction:column;gap:.625rem">
+          <span style="font-weight:600">Stages it touches</span>
+          <div class="stagechips" id="d-stages"></div>
+          <span style="font-size:.844rem;color:var(--muted)" id="d-stagenames"></span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.625rem">
+          <span style="font-weight:600">Technology it runs</span>
+          <div class="chips" id="d-tech"></div>
+        </div>
+        <p class="moves"><strong>How it moves. </strong><span id="d-moves"></span></p>
+      </div>
+    </div>
+    <p class="lede" style="font-size:.9375rem">Outside NEOI's headcount: exam owners' question setters, about 3,000 empanelled reviewers and translators who each see one fragment, state police for escorts, and the Independent Examination Integrity Board of about 30, which audits NEOI from outside. Staffing figures are planning assumptions to be tested in the pilot.</p>
+  </div>
+</section>
+
+<section class="you section" id="you" aria-labelledby="you-title">
+  <div class="wrap">
+    <div style="max-width:47.5rem;display:flex;flex-direction:column;gap:.75rem">
+      <h2 class="h2" id="you-title">What changes for you</h2>
+      <p class="lede">Choose who you are to see what NEOI means in practice.</p>
+    </div>
+    <div class="tabs" id="tabs" role="group" aria-label="Choose your role"></div>
+    <div class="panel" aria-live="polite">
+      <div class="panel-l">
+        <span class="panel-label" id="p-label"></span>
+        <h3 class="panel-promise" id="p-promise"></h3>
+        <a class="btn btn-navy" id="p-cta" href="#journey"></a>
+      </div>
+      <ul class="checks" id="p-items"></ul>
+    </div>
+  </div>
+</section>
+
+<section class="roadmap section" id="roadmap" aria-labelledby="road-title">
+  <div class="wrap">
+    <div class="split">
+      <h2 class="h2" id="road-title">Ten years, five gated phases</h2>
+      <p class="lede">About ₹3,813 crore over ten years. One avoided NEET-scale cancellation, about ₹1,026 crore in direct losses, covers roughly three years of running costs. Each phase starts only after the last one passes an independent review.</p>
+    </div>
+    <ol class="phases" id="phases"></ol>
+  </div>
+</section>
+
+<section class="report section" id="report" aria-labelledby="report-title">
+  <div class="wrap">
+    <div class="report-copy">
+      <h2 class="h2" id="report-title">Seen a question paper for sale?</h2>
+      <p>Tell us safely. Reports are protected, you can stay anonymous, and every verified tip is investigated by people, not just software.</p>
+      <p style="font-size:1.0625rem">Helpline: [HELPLINE NUMBER]<br>Email: [REPORTING EMAIL]</p>
+    </div>
+    <form class="leak" id="leak-form" aria-label="Report a suspected leak" novalidate>
+      <div class="field"><label for="exam">Which exam is it about?</label><input id="exam" type="text" placeholder="For example, NEET-UG or a state recruitment exam"></div>
+      <div class="field"><label for="seen">What did you see, and where?</label><textarea id="seen" rows="4" placeholder="A channel, a group, a website or a person offering questions"></textarea></div>
+      <div class="field"><label for="contact">Your contact (optional)</label><input id="contact" type="text" placeholder="Leave blank to stay anonymous"></div>
+      <button type="submit" class="btn btn-navy" style="align-self:flex-start">Send report</button>
+      <p class="form-msg" id="form-msg" hidden>This is a prototype, so reports are not sent anywhere. In the live service, your report would go to NEOI's integrity unit.</p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <span class="brand-hi" lang="hi" style="color:var(--pale-2)">राष्ट्रीय परीक्षा संचालन संस्थान</span>
+        <span class="brand-en" style="color:#fff">National Examination Operations Institution</span>
+        <span>A proposed shared security utility for India's public examinations. Concept prototype for the Maudrik V7.0 policy case.</span>
+      </div>
+      <nav class="foot-col" aria-label="Explore">
+        <span class="foot-h">Explore</span>
+        <a href="#journey">Follow a paper</a><a href="#inside">Inside NEOI</a><a href="#you">For you</a><a href="#roadmap">Roadmap</a>
+      </nav>
+      <nav class="foot-col" aria-label="Policies">
+        <span class="foot-h">Policies</span>
+        <a href="#main">Website policy</a><a href="#main">Accessibility statement</a><a href="#main">Privacy and data protection</a><a href="#main">Right to Information</a><a href="#main">Grievance redressal</a>
+      </nav>
+      <div class="foot-col">
+        <span class="foot-h">Contact</span>
+        <span>[OFFICE ADDRESS]</span><span>Helpline: [HELPLINE NUMBER]</span><span>Email: [CONTACT EMAIL]</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>Built to follow the Guidelines for Indian Government Websites and Apps (GIGW 3.0) and WCAG 2.1 AA.</span>
+      <span>Last updated: 30 September 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const J = [
+      { name: 'Question pool', title: 'A pool of about 1,000 questions, ten times the paper', place: [0],
+        visualLabel: 'Forty squares, all the same colour: the whole pool, none chosen yet',
+        legend: [{ c: '#5B7BB0', t: 'Pool questions written by the exam owner' }],
+        readBig: '0', readColor: '#7FC8A9', readText: 'people can read the final paper: it does not exist yet. Each setter sees only their own questions.',
+        people: [
+          { role: 'Question setters', where: 'Exam owner (CBSE, NTA, UPSC, IIMs)', does: 'Write questions as today; each sees only their own contribution.' },
+          { role: 'Academic lead', where: 'Exam owner', does: 'Approves the blueprint: topics, difficulty and marks.' },
+          { role: 'Intake team', where: 'NEOI national core, paper assembly', does: 'Receives the pool into encrypted intake and checks it against the blueprint.' } ],
+        tech: ['Encrypted upload portal', 'AI similarity scan against guess papers', 'Blueprint tagging'],
+        ledger: 'Pool received: about 1,000 items, blueprint v1', hash: '7f3a 91c2 e04d',
+        threat: 'A setter leaking their own questions. Only about one in ten will ever be chosen.',
+        fails: 'The setter is liable under the 2026 Amendment: 5 to 10 years.' },
+      { name: 'Paper creation', title: 'NEOI chooses questions into equivalent papers', place: [1],
+        visualLabel: 'Twelve of forty squares coloured in three groups: forms A, B and C',
+        legend: [{ c: '#F2A65A', t: 'Form A' }, { c: '#7FC8A9', t: 'Form B' }, { c: '#B7A8F0', t: 'Form C' }, { c: '#2A3F63', t: 'Not chosen' }],
+        readBig: '3', readColor: '#F2A65A', readText: 'people, inside a sealed assembly cell, ever see a full paper before exam day.',
+        people: [
+          { role: 'Psychometricians', where: 'NEOI national core, paper assembly (70 staff)', does: 'Build several papers of equal difficulty from the pool.' },
+          { role: 'Language reviewers', where: 'Empanelled, about 3,000 nationally', does: 'Check one language version of one fragment each.' },
+          { role: 'Academic moderator', where: 'Exam owner, inside the cell', does: 'Signs off the papers academically.' } ],
+        tech: ['Difficulty-matched form assembly', 'Air-gapped assembly cell', 'Two-person approvals'],
+        ledger: 'Forms A, B, C approved by 3 named people', hash: 'c19e 44b0 7a2f',
+        threat: 'One leaked paper reaching every candidate. Several forms mean a leak reaches only a fraction.',
+        fails: 'The ledger names the three people in the cell.' },
+      { name: 'Question storage', title: 'Locked, split and unreadable', place: [1],
+        visualLabel: 'All forty squares turned to the same dark locked colour',
+        legend: [{ c: '#44557A', t: 'Encrypted; no one holds the whole key' }],
+        readBig: '0', readColor: '#7FC8A9', readText: 'people can read it. Each paper\u2019s key is split into 5 shares held by 5 separate institutions.',
+        people: [
+          { role: 'Key custody team', where: 'NEOI national core (30 staff)', does: 'Splits each paper\u2019s key; any 3 of 5 shares are needed.' },
+          { role: '24x7 security operations', where: 'NEOI national core (90 staff)', does: 'Watches the vault and every access attempt.' },
+          { role: 'Five key holders', where: 'Five separate institutions', does: 'Each keeps one share; none can open a paper alone.' } ],
+        tech: ['Hardware security modules', '3-of-5 split keys', 'Blockchain ledger on MeitY Vishvasya'],
+        ledger: 'Keys split 3-of-5; holders recorded', hash: '02bd 8e61 f3c7',
+        threat: 'A server breach or an insider copying files. Stolen data is unreadable and there is no master key.',
+        fails: 'The ledger shows whose key share was used, and when.' },
+      { name: 'Personnel access', title: 'The right people, for the right hours only', place: [1, 2, 4],
+        visualLabel: 'Squares stay locked while people are assigned',
+        legend: [{ c: '#44557A', t: 'Still encrypted' }],
+        readBig: '0', readColor: '#7FC8A9', readText: 'new people gain access to content. Staff get only what their duty needs, and access expires on its own.',
+        people: [
+          { role: 'HR and vetting', where: 'NEOI national core (60 staff)', does: 'Checks identity and conflicts, including coaching links.' },
+          { role: 'Integrity unit', where: 'NEOI national core (60 staff)', does: 'Watches access patterns and runs the whistleblower channel.' },
+          { role: 'Accreditation team', where: 'Regional hubs (120 staff)', does: 'Names an independent observer and 2 key custodians for every centre.' } ],
+        tech: ['Time-limited role access', 'Phishing-resistant sign-in', 'AI access-anomaly alerts'],
+        ledger: 'Exam-day roles granted: 3 named per centre', hash: '5ea0 d7c8 1b94',
+        threat: 'An insider with more access than their job needs.',
+        fails: 'The person who approved the access answers for it.' },
+      { name: 'Transmission', title: 'Printed at a hub, sealed and tracked', place: [2, 3],
+        visualLabel: 'The twelve chosen squares shown as sealed packets; the rest stay in the vault',
+        legend: [{ c: '#C98B3E', t: 'Sealed, serialised packets' }, { c: '#1C2E4D', t: 'Unused questions, never printed' }],
+        readBig: '0', readColor: '#7FC8A9', readText: 'people can read it in transit. Papers print only inside a hub\u2019s secure cell and leave sealed.',
+        people: [
+          { role: 'Logistics and custody', where: 'Regional hub (40 per hub)', does: 'Print, seal and dispatch numbered packets to district strongrooms.' },
+          { role: 'Two custodians per handover', where: 'Hub and district', does: 'Both sign every handover; a packet has one holder at a time.' },
+          { role: 'Police escort', where: 'State government', does: 'Escorts packets; never sees a readable paper.' } ],
+        tech: ['Secure regional print cell', 'Tamper-evident numbered packets', 'GPS tracking', 'One-holder-at-a-time custody'],
+        ledger: 'Packet 04-117: hub to district, 2 signatures', hash: 'a8f1 3c5e 60d2',
+        threat: 'Theft or early opening on the road. A missing countersignature raises an alert at once.',
+        fails: 'The last custodian pair to sign is identified.' },
+      { name: 'Examination centre', title: 'The actual building, checked in advance', place: [4],
+        visualLabel: 'Sealed packets have reached the centre',
+        legend: [{ c: '#C98B3E', t: 'Sealed packets at the centre' }],
+        readBig: '0', readColor: '#7FC8A9', readText: 'people can read it. The packet stays sealed in the centre\u2019s strongroom.',
+        people: [
+          { role: 'Field auditor', where: 'Regional hub, accreditation', does: 'Inspected rooms, power, storage and access before approval.' },
+          { role: 'Independent observer', where: 'NEOI, one per centre', does: 'Reports to NEOI, not to the centre.' },
+          { role: 'Superintendent and invigilators', where: 'Existing centre staff', does: 'Run the hall, one invigilator per 15 candidates.' } ],
+        tech: ['Accreditation checklist', 'CCTV on storage and handling, never question text', 'Backup power'],
+        ledger: 'Centre 2291 accredited; seals checked 08:10', hash: 'e2c7 59ab 0f13',
+        threat: 'Collusion at one centre. Different forms by region narrow where a leak came from.',
+        fails: 'The superintendent or auditor, depending on whose duty failed.' },
+      { name: 'Candidate check-in', title: 'The right candidate in the right seat', place: [4],
+        visualLabel: 'Packets remain sealed while candidates are verified',
+        legend: [{ c: '#C98B3E', t: 'Still sealed' }],
+        readBig: '0', readColor: '#7FC8A9', readText: 'people can read it yet. Identity is checked first; no genuine candidate is turned away.',
+        people: [
+          { role: 'ID desk staff', where: 'Centre, 2 per centre', does: 'Match admit card, ID and face or fingerprint.' },
+          { role: 'Exception desk', where: 'NEOI candidate services (80 staff)', does: 'Verifies by hand when a biometric check fails.' },
+          { role: 'Accessibility support', where: 'NEOI candidate services', does: 'Scribes, extra time and ramps as approved.' } ],
+        tech: ['ID and admit-card match', 'Face or fingerprint liveness', 'Manual verification route'],
+        ledger: 'Check-in event recorded; no biometrics on the ledger', hash: '9b40 e6f5 2c81',
+        threat: 'Impersonation. A machine mismatch alone never excludes anyone.',
+        fails: 'The ID desk answers for it; candidates can appeal.' },
+      { name: 'Examination', title: 'Unlocked minutes before the start', place: [4],
+        visualLabel: 'Form A squares turn bright: unlocked at this centre only; other forms stay sealed elsewhere',
+        legend: [{ c: '#F2A65A', t: 'Form A, unlocked here' }, { c: '#C98B3E', t: 'Other forms, other centres' }],
+        readBig: '15 min', readColor: '#F2A65A', readText: 'before the start is when candidates first see the paper, and only the form sent to their centre.',
+        people: [
+          { role: 'Three of five key holders', where: 'Five institutions', does: 'Approve the release for this centre and this form only.' },
+          { role: 'Key custodians', where: 'NEOI, 2 per centre', does: 'Open the packet or unlock the computer test together.' },
+          { role: 'Invigilators', where: 'Existing centre staff', does: 'Conduct the exam; timing and accommodations are logged.' } ],
+        tech: ['Time- and place-locked release', 'Offline release, synced later', 'Answers saved locally on each computer'],
+        ledger: 'Form A released to centre 2291 at 09:15', hash: '3d6c a07e b5f9',
+        threat: 'Early access. The paper cannot be decrypted before the release minute.',
+        fails: 'The key-holder quorum and custodians are recorded by name.' },
+      { name: 'Evaluation and results', title: 'Every answer fingerprinted, every score checked twice', place: [1, 0],
+        visualLabel: 'Form A squares turn green: answers fingerprinted and scored',
+        legend: [{ c: '#4CC38A', t: 'Answers fingerprinted and scored' }],
+        readBig: '0', readColor: '#7FC8A9', readText: 'evaluators see candidate names. Marking is anonymous; results are approved by the exam owner.',
+        people: [
+          { role: 'Evaluation team', where: 'NEOI national core (50 staff)', does: 'Reconciles scripts and recomputes every score independently.' },
+          { role: 'Integrity unit', where: 'NEOI national core', does: 'Reviews answer-similarity flags; humans decide.' },
+          { role: 'Exam owner', where: 'Result approval', does: 'Approves results and handles appeals.' } ],
+        tech: ['Answer-file fingerprints', 'Anonymous marking', 'Independent recomputation'],
+        ledger: 'Results v1 signed; scoring code v3', hash: 'f71b 28d4 c6e0',
+        threat: 'Changed answers or marks. Any edit shows up as a new, signed version.',
+        fails: 'Candidates can appeal; the evaluation team answers for errors.' }
+    ];
+const D = [
+      { tier: 'National core', name: 'Leadership and governance', count: 25, stages: [0,1,2,3,4,5,6,7,8], does: 'Sets standards, owns the budget and reports to the governing board and Parliament.', tech: ['Integrity dashboards', 'Incident command'], moves: 'Stays at the core; convenes the incident desk when an alert fires anywhere.' },
+      { tier: 'National core', name: 'Paper assembly and psychometrics', count: 70, stages: [0,1,8], does: 'Receives exam owners\u2019 pools and assembles equivalent final papers.', tech: ['Form assembly software', 'AI similarity scan', 'Air-gapped cell'], moves: 'Works only inside the sealed assembly cell; never travels with papers.' },
+      { tier: 'National core', name: 'Key custody and cryptography', count: 30, stages: [2,7], does: 'Splits each paper\u2019s key into five shares and schedules its release.', tech: ['Hardware security modules', '3-of-5 split keys'], moves: 'Never handles paper; releases key shares to centres at the exam minute.' },
+      { tier: 'National core', name: 'Technology, ledger and 24x7 security', count: 90, stages: [2,4,7,8], does: 'Runs the platforms, the blockchain ledger nodes and round-the-clock monitoring.', tech: ['MeitY Vishvasya ledger', 'Security operations centre'], moves: 'Supports hubs and centres remotely; sends engineers to test sites before exams.' },
+      { tier: 'National core', name: 'Integrity and investigation', count: 60, stages: [0,1,2,3,4,5,6,7,8], does: 'Reviews alerts and tips, and works with CBI, state police and I4C.', tech: ['AI anomaly review', 'Whistleblower channel'], moves: 'Deploys to any hub or centre within hours when a leak is suspected.' },
+      { tier: 'National core', name: 'Evaluation and results', count: 50, stages: [8], does: 'Reconciles scripts and recomputes every score before results are approved.', tech: ['Answer fingerprints', 'Anonymous marking'], moves: 'Receives answer batches back from every centre after the exam.' },
+      { tier: 'National core', name: 'Procurement and legal', count: 45, stages: [4,5], does: 'Tenders with security before price and enforces vendor liability.', tech: ['Vendor audit records'], moves: 'Audits printers, carriers and technology vendors at their own sites.' },
+      { tier: 'National core', name: 'Finance, HR and admin', count: 60, stages: [3], does: 'Vets staff, checks conflicts and rotates sensitive roles.', tech: ['Time-limited role access'], moves: 'Stays at the core; rotates people out of sensitive roles on a schedule.' },
+      { tier: 'Regional hubs', name: 'Logistics and custody', count: 230, stages: [4,5], does: 'Prints, seals and moves papers from hub to district to centre.', tech: ['Secure print cells', 'GPS tracking', 'Tamper-evident packets'], moves: 'Travels hub to district to centre with every consignment; 30 at the core, 40 per hub.' },
+      { tier: 'Regional hubs', name: 'Centre accreditation and audit', count: 120, stages: [3,5], does: 'Inspects every actual building and names each centre\u2019s observer and custodians.', tech: ['Accreditation checklist'], moves: 'Visits centres weeks before an exam and makes unannounced spot checks; 20 at the core, 20 per hub.' },
+      { tier: 'Regional hubs', name: 'Identity and candidate services', count: 80, stages: [6], does: 'Runs the manual verification desk, accessibility support and the helpline.', tech: ['ID matching', 'Liveness checks'], moves: 'Backs up centre ID desks by phone and video on exam day.' },
+      { tier: 'At every centre', name: 'Independent observer', count: 1, per: true, stages: [5,6,7], does: 'Watches the whole exam day and reports straight to NEOI, not to the centre.', tech: ['Incident app'], moves: 'Assigned by the hub to a centre they have no link with, for exam day only.' },
+      { tier: 'At every centre', name: 'Key custodians', count: 2, per: true, stages: [5,7], does: 'Open the packet or unlock the computer test together, at the release minute.', tech: ['Release device', 'Two-person opening'], moves: 'Travel from the hub with credentials that work only on exam day.' },
+      { tier: 'At every centre', name: 'Centre staff', count: 0, existing: true, stages: [5,6,7], does: 'Superintendent, ID desk and invigilators run the hall, one invigilator per 15 candidates.', tech: ['Digital handovers'], moves: 'Existing staff from the centre; NEOI trains them and records their duties.' }
+    ];
+const people = [
+      { label: 'Candidates and parents', promise: 'The same secure exam for every candidate, with no extra fee.', cta: 'Report a suspected leak', href: '#report', items: ['No security surcharge on application fees', 'If a biometric check fails, a staffed desk verifies you by hand, so no genuine candidate is turned away', 'If an exam is cancelled, your fee and a travel allowance are refunded automatically'] },
+      { label: 'Exam owners', promise: 'You keep every academic decision. NEOI runs the security.', cta: 'Follow a paper', href: '#journey', items: ['You write the question pool and approve results, as today', 'NEOI assembles and secures the final papers from your pool', 'One incident desk and one evidence trail for every exam you run'] },
+      { label: 'State governments', promise: 'Join by agreement and get the same protection as national exams.', cta: 'See inside NEOI', href: '#inside', items: ['Your police and venues support exam day; no readable paper passes through your offices', 'Your recruitment exams get national-grade custody and audit', 'A per-sitting service fee instead of building your own systems'] },
+      { label: 'Centres and exam staff', promise: 'Clear duties and fewer paper registers.', cta: 'Follow a paper', href: '#journey', items: ['Accreditation tells you exactly what your site needs before exam day', 'Digital, countersigned handovers replace handwritten registers', 'Every duty is named, so no one is blamed for someone else\u2019s failure'] },
+      { label: 'Technology and logistics providers', promise: 'Compete on security first, price second.', cta: 'Follow a paper', href: '#journey', items: ['Security and continuity checks come before price in every tender', 'No provider ever holds a full decryption key', 'Clear liability: up to \u20b95 crore and an 8-year bar under the 2026 Amendment'] },
+      { label: 'Public and whistleblowers', promise: 'Seen a paper for sale? Tell us safely.', cta: 'Report a suspected leak', href: '#report', items: ['A protected channel where you can stay anonymous', 'Every verified tip is investigated by people, not just software', 'Tips that stop a leak are rewarded'] }
+    ];
+const phases = [
+      { years: 'Years 1\u20132', name: 'Build and pilot', text: 'Set up NEOI by law, two hubs and the ledger; pilot one paper exam and one computer exam.', cost: '\u20b9566 cr', bg: '#1B355C', accent: '#F2A65A' },
+      { years: 'Years 3\u20134', name: 'National rollout', text: 'All five hubs; every NTA exam runs on equivalent papers assembled from owner pools.', cost: '\u20b9656 cr', bg: '#132B4E', accent: '#9FB3D1' },
+      { years: 'Years 5\u20136', name: 'States join', text: 'State recruitment and school boards join by service agreement.', cost: '\u20b9723 cr', bg: '#132B4E', accent: '#9FB3D1' },
+      { years: 'Years 7\u20138', name: 'Adapt', text: 'Refresh technology, retest AI and biometrics for bias, run authorised attack drills.', cost: '\u20b9723 cr', bg: '#132B4E', accent: '#9FB3D1' },
+      { years: 'Years 9\u201310', name: 'Review and renew', text: 'Independent evaluation, fresh tenders and a plan for the next decade.', cost: '\u20b9648 cr', bg: '#132B4E', accent: '#9FB3D1' }
+    ];
+
+
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  /* ---------- Text size and language ---------- */
+  let zoom = 1;
+  document.querySelectorAll('[data-zoom]').forEach((b) => b.addEventListener('click', () => {
+    const d = Number(b.dataset.zoom);
+    zoom = d === 0 ? 1 : Math.min(1.3, Math.max(0.9, Math.round((zoom + d * 0.1) * 10) / 10));
+    document.documentElement.style.fontSize = (16 * zoom) + 'px';
+  }));
+  document.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => {
+    const hi = b.dataset.lang === 'hi';
+    $('hero-en').hidden = hi; $('hero-hi').hidden = !hi;
+    document.querySelectorAll('[data-lang]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+
+  /* ---------- Leak value meter ---------- */
+  const meter = { a: false, s: false, e: false };
+  const controls = [
+    ['a', 'Break authenticity', 'Exam owners submit a large pool; NEOI picks the final paper, so a buyer cannot know which questions appear'],
+    ['s', 'Break scale', 'Several equivalent versions of the paper, so one leak reaches only a fraction of candidates'],
+    ['e', 'Break early access', 'Split, time-locked keys unlock the paper minutes before the exam starts']
+  ];
+  $('m-toggles').innerHTML = controls.map(([k, t, d]) =>
+    `<button type="button" class="toggle" data-k="${k}" aria-pressed="false"><span><span class="toggle-t">${t}</span><span class="toggle-d">${d}</span></span><span class="pill">Off</span></button>`).join('');
+  function renderMeter() {
+    let v = 1500000;
+    if (meter.a) v *= 0.1; if (meter.s) v *= 0.1; if (meter.e) v *= 0.05;
+    const n = [meter.a, meter.s, meter.e].filter(Boolean).length;
+    const colors = ['#B3261E', '#B35A0B', '#8A6A00', '#1E7A4C'];
+    const verdicts = ['Sells easily', 'Harder to sell', 'Barely worth selling', 'Worthless'];
+    $('m-value').textContent = '₹' + Math.round(v).toLocaleString('en-IN');
+    $('m-value').style.color = colors[n];
+    $('m-verdict').textContent = verdicts[n];
+    $('m-verdict').style.color = colors[n];
+    $('m-bar').style.width = Math.max(1.5, v / 1500000 * 100) + '%';
+    $('m-bar').style.background = colors[n];
+    document.querySelectorAll('.toggle').forEach((b) => {
+      const on = meter[b.dataset.k];
+      b.setAttribute('aria-pressed', String(on));
+      b.querySelector('.pill').textContent = on ? 'On' : 'Off';
+    });
+  }
+  $('m-toggles').addEventListener('click', (e) => {
+    const b = e.target.closest('.toggle'); if (!b) return;
+    meter[b.dataset.k] = !meter[b.dataset.k]; renderMeter();
+  });
+  renderMeter();
+
+  /* ---------- Journey ---------- */
+  let ji = 0, timer = null;
+  const PLACES = [['Exam owner', 'CBSE, NTA, UPSC, IIMs'], ['National core', 'NEOI, New Delhi'], ['Regional hub', 'One of five NEOI hubs'], ['District', 'Secure strongroom'], ['Exam centre', 'Accredited site']];
+  $('j-stops').innerHTML = J.map((x, i) =>
+    `<li style="display:flex;justify-content:center"><button type="button" class="stop" data-i="${i}"><span class="dot">${i + 1}</span><span class="stop-label">${esc(x.name)}</span></button></li>`).join('');
+  $('j-places').innerHTML = PLACES.map((p) =>
+    `<div class="place"><span class="place-tier">${p[0]}</span><span class="place-name">${p[1]}</span><span class="place-here">The paper is here now</span></div>`).join('');
+  $('j-grid').innerHTML = '<span></span>'.repeat(40);
+  const A = [1, 11, 21, 31], B = [4, 14, 24, 34], C = [7, 17, 27, 37], chosen = A.concat(B, C);
+  function squareColor(k) {
+    const inA = A.includes(k), inB = B.includes(k), inC = C.includes(k), isChosen = chosen.includes(k);
+    if (ji === 0) return '#5B7BB0';
+    if (ji === 1) return inA ? '#F2A65A' : inB ? '#7FC8A9' : inC ? '#B7A8F0' : '#2A3F63';
+    if (ji === 2 || ji === 3) return '#44557A';
+    if (ji >= 4 && ji <= 6) return isChosen ? '#C98B3E' : '#1C2E4D';
+    if (ji === 7) return inA ? '#F2A65A' : isChosen ? '#7A5A30' : '#1C2E4D';
+    return inA ? '#4CC38A' : '#1C2E4D';
+  }
+  const personIcon = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="#13294B" stroke-width="2"/><path d="M4.5 20c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5" fill="none" stroke="#13294B" stroke-width="2" stroke-linecap="round"/></svg>';
+  function renderJourney() {
+    const cur = J[ji];
+    document.querySelectorAll('.stop').forEach((b, i) => {
+      b.classList.toggle('done', i < ji);
+      if (i === ji) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+    $('j-fill').style.width = (ji / 8 * 88.9) + '%';
+    document.querySelectorAll('.place').forEach((el, i) => el.classList.toggle('here', cur.place.includes(i)));
+    $('j-kicker').textContent = `Stage ${ji + 1} of 9: ${cur.name}`;
+    $('j-title').textContent = cur.title;
+    $('j-grid').setAttribute('aria-label', cur.visualLabel);
+    [...$('j-grid').children].forEach((sq, k) => { sq.style.background = squareColor(k); });
+    $('j-legend').innerHTML = cur.legend.map((l) => `<span><i style="background:${l.c}"></i>${esc(l.t)}</span>`).join('');
+    $('j-readn').textContent = cur.readBig; $('j-readn').style.color = cur.readColor;
+    $('j-readt').textContent = cur.readText;
+    $('j-people').innerHTML = cur.people.map((p) =>
+      `<li><span class="avatar">${personIcon}</span><span><span class="p-role">${esc(p.role)}</span><span class="p-where">${esc(p.where)}</span><span class="p-does">${esc(p.does)}</span></span></li>`).join('');
+    $('j-tech').innerHTML = cur.tech.map((t) => `<span class="chip">${esc(t)}</span>`).join('');
+    const log = J.slice(0, ji + 1).slice(-4);
+    $('j-ledger').innerHTML = log.map((x, i) =>
+      `<li class="${i === log.length - 1 ? 'new' : ''}"><span class="l-text">${esc(x.ledger)}</span><span class="l-hash">sha-256  ${x.hash}…</span></li>`).join('');
+    $('j-threat').textContent = cur.threat;
+    $('j-fails').textContent = cur.fails;
+    $('j-play').textContent = timer ? 'Pause' : (ji === 8 ? 'Replay the journey' : 'Play the journey');
+  }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  function go(i) { stop(); ji = Math.max(0, Math.min(8, i)); renderJourney(); }
+  $('j-stops').addEventListener('click', (e) => { const b = e.target.closest('.stop'); if (b) go(Number(b.dataset.i)); });
+  $('j-prev').addEventListener('click', () => go(ji - 1));
+  $('j-next').addEventListener('click', () => go(ji + 1));
+  $('j-play').addEventListener('click', () => {
+    if (timer) { stop(); renderJourney(); return; }
+    if (ji >= 8) ji = 0;
+    timer = setInterval(() => { if (ji >= 8) { stop(); renderJourney(); return; } ji++; renderJourney(); }, 3200);
+    renderJourney();
+  });
+  renderJourney();
+
+  /* ---------- Inside NEOI ---------- */
+  let dsel = 2;
+  const TIERS = [['National core', 'New Delhi: standards, keys, evidence', '#13294B', '#FFFFFF'], ['Regional hubs', 'Five hubs: print, custody, centres', '#1E7A4C', '#FFFFFF'], ['At every centre', 'Exam day only', '#E07B1F', '#1A1206']];
+  $('tiers').innerHTML = TIERS.map((t) => {
+    const items = D.map((d, idx) => ({ d, idx })).filter((o) => o.d.tier === t[0]).map(({ d, idx }) => {
+      const count = d.existing ? 'existing' : d.per ? d.count + ' each' : d.count;
+      const w = d.existing ? 100 : d.per ? 8 : Math.max(8, d.count / 230 * 100);
+      return `<button type="button" class="dept" data-d="${idx}" aria-pressed="false"><span class="dept-row"><span class="dept-name">${esc(d.name)}</span><span class="dept-count">${count}</span></span><span class="dept-track"><i style="width:${w}%"></i></span></button>`;
+    }).join('');
+    return `<div class="tier"><div class="tier-head" style="background:${t[2]};color:${t[3]}"><b>${t[0]}</b><span>${t[1]}</span></div>${items}</div>`;
+  }).join('');
+  function renderDept() {
+    const d = D[dsel];
+    document.querySelectorAll('.dept').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.d) === dsel)));
+    $('d-tier').textContent = d.tier;
+    $('d-name').textContent = d.name;
+    $('d-count').textContent = d.existing ? 'Existing centre staff, trained by NEOI' : d.per ? `${d.count} NEOI-appointed ${d.count === 1 ? 'person' : 'people'} at every centre on exam day` : `${d.count} permanent staff`;
+    $('d-does').textContent = d.does;
+    $('d-stages').innerHTML = J.map((x, i) => `<span class="${d.stages.includes(i) ? 'on' : ''}" title="${esc(x.name)}">${i + 1}</span>`).join('');
+    $('d-stagenames').textContent = d.stages.length === 9 ? 'All nine stages' : d.stages.map((i) => J[i].name).join(', ');
+    $('d-tech').innerHTML = d.tech.map((t) => `<span class="chip">${esc(t)}</span>`).join('');
+    $('d-moves').textContent = d.moves;
+  }
+  $('tiers').addEventListener('click', (e) => { const b = e.target.closest('.dept'); if (b) { dsel = Number(b.dataset.d); renderDept(); } });
+  renderDept();
+
+  /* ---------- For you ---------- */
+  let who = 0;
+  const HREF = { '#how': '#journey', '#model': '#inside', '#accountability': '#journey' };
+  $('tabs').innerHTML = people.map((p, i) => `<button type="button" class="tab" data-w="${i}" aria-pressed="false">${esc(p.label)}</button>`).join('');
+  const check = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink:0;margin-top:2px"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#1E7A4C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function renderWho() {
+    const p = people[who];
+    document.querySelectorAll('.tab').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.w) === who)));
+    $('p-label').textContent = p.label;
+    $('p-promise').textContent = p.promise;
+    $('p-cta').textContent = p.cta;
+    $('p-cta').setAttribute('href', HREF[p.href] || p.href);
+    $('p-items').innerHTML = p.items.map((t) => `<li>${check}<span>${esc(t)}</span></li>`).join('');
+  }
+  $('tabs').addEventListener('click', (e) => { const b = e.target.closest('.tab'); if (b) { who = Number(b.dataset.w); renderWho(); } });
+  renderWho();
+
+  /* ---------- Roadmap ---------- */
+  $('phases').innerHTML = phases.map((p, i) =>
+    `<li class="phase ${i === 0 ? 'first' : ''}"><span class="phase-y">${esc(p.years)}</span><h3 class="phase-n">${esc(p.name)}</h3><p class="phase-t">${esc(p.text)}</p><span class="phase-c">${esc(p.cost)}</span></li>`).join('');
+
+  /* ---------- Report form ---------- */
+  $('leak-form').addEventListener('submit', (e) => { e.preventDefault(); $('form-msg').hidden = false; });
+})();
+</script>
+</body>
+</html>
